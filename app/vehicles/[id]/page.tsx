@@ -1,7 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { vehicles } from "@/data/vehicles";
+import VehicleGallery from "@/components/VehicleGallery";
+import Navbar from "@/components/Navbar";
 
 const WHATSAPP_NUMBER = "2348085942475";
 
@@ -17,23 +19,22 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: VehicleDetailsPageProps) {
-  return params.then(({ id }) => {
-    const vehicle = vehicles.find((item) => item.id === id);
+  const { id } = await params;
+  const vehicle = vehicles.find((item) => item.id === id);
 
-    if (!vehicle) {
-      return {
-        title: "Vehicle Not Found | A-ZED 69 Autos",
-      };
-    }
-
+  if (!vehicle) {
     return {
-      title: `${vehicle.year} ${vehicle.name} | A-ZED 69 Autos`,
-      description: `Enquire about the ${vehicle.year} ${vehicle.name} from A-ZED 69 Autos.`,
+      title: "Vehicle Not Found | A-ZED 69 Autos",
     };
-  });
+  }
+
+  return {
+    title: `${vehicle.year} ${vehicle.name} | A-ZED 69 Autos`,
+    description: `Enquire about the ${vehicle.year} ${vehicle.name} from A-ZED 69 Autos.`,
+  };
 }
 
 export default async function VehicleDetailsPage({
@@ -59,6 +60,7 @@ export default async function VehicleDetailsPage({
     `Location: ${vehicle.location}`,
     `Transmission: ${vehicle.transmission || "Not specified"}`,
     `Fuel Type: ${vehicle.fuelType || "Not specified"}`,
+    `Price: ${vehicle.price}`,
     "",
     "Please provide the current price, availability, and more details about this vehicle.",
   ].join("\n");
@@ -71,8 +73,14 @@ export default async function VehicleDetailsPage({
     .filter((item) => item.id !== vehicle.id)
     .slice(0, 3);
 
+  const galleryImages =
+    vehicle.images && vehicle.images.length > 0
+      ? vehicle.images.filter(Boolean)
+      : [vehicle.image];
+
   return (
     <main className="min-h-screen bg-white">
+    <Navbar/>
       <section className="relative overflow-hidden bg-black">
         <div className="absolute -left-40 top-0 h-96 w-96 rounded-full bg-red-600/20 blur-3xl" />
         <div className="absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-blue-600/20 blur-3xl" />
@@ -93,32 +101,12 @@ export default async function VehicleDetailsPage({
           </div>
 
           <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-16">
-            <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gray-900">
-              <div className="relative aspect-[4/3]">
-                <Image
-                  src={vehicle.image}
-                  alt={`${vehicle.year} ${vehicle.name}`}
-                  fill
-                  priority
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 60vw"
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
-                <div className="absolute left-5 top-5">
-                  <span className="rounded-full bg-red-600 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white">
-                    {vehicle.condition}
-                  </span>
-                </div>
-
-                <div className="absolute bottom-5 left-5">
-                  <span className="text-sm font-bold text-white">
-                    {vehicle.year}
-                  </span>
-                </div>
-              </div>
-            </div>
+            <VehicleGallery
+              name={vehicle.name}
+              year={vehicle.year}
+              condition={vehicle.condition}
+              images={galleryImages}
+            />
 
             <div>
               <div className="mb-5 flex items-center gap-3">
@@ -370,12 +358,9 @@ function VehicleCardPreview({
       className="group overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all duration-300 hover:-translate-y-1 hover:border-black hover:shadow-xl"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-gray-100">
-        <Image
+        <ImagePreview
           src={vehicle.image}
           alt={`${vehicle.year} ${vehicle.name}`}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
 
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
@@ -413,6 +398,24 @@ function VehicleCardPreview({
         </div>
       </div>
     </Link>
+  );
+}
+
+function ImagePreview({
+  src,
+  alt,
+}: {
+  src: string;
+  alt: string;
+}) {
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      className="object-cover transition-transform duration-500 group-hover:scale-105"
+      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+    />
   );
 }
 
