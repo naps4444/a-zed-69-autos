@@ -18,6 +18,9 @@ export default function VehicleGallery({
 }: VehicleGalleryProps) {
   const [activeImage, setActiveImage] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadedThumbnails, setLoadedThumbnails] = useState<
+    Record<number, boolean>
+  >({});
 
   const currentImage = images[activeImage] || images[0];
 
@@ -26,13 +29,29 @@ export default function VehicleGallery({
     setActiveImage(index);
   };
 
+  const handleThumbnailLoad = (index: number) => {
+    setLoadedThumbnails((previous) => ({
+      ...previous,
+      [index]: true,
+    }));
+  };
+
   return (
     <div className="relative">
       <div className="overflow-hidden rounded-3xl border border-white/10 bg-gray-900">
         <div className="relative aspect-[4/3]">
           {isLoading && (
-            <div className="absolute inset-0 z-10 flex items-center justify-center bg-gray-900">
-              <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-600 border-t-red-600" />
+            <div
+              className="absolute inset-0 z-10 overflow-hidden bg-gray-900"
+              aria-hidden="true"
+            >
+              <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900" />
+
+              <div className="absolute left-5 top-5 h-8 w-24 animate-pulse rounded-full bg-gray-700" />
+
+              <div className="absolute bottom-5 left-5 h-5 w-12 animate-pulse rounded bg-gray-700" />
+
+              <div className="absolute bottom-5 right-5 h-7 w-12 animate-pulse rounded-full bg-gray-700" />
             </div>
           )}
 
@@ -43,7 +62,7 @@ export default function VehicleGallery({
             fill
             priority={activeImage === 0}
             onLoad={() => setIsLoading(false)}
-            className={`object-cover transition-opacity duration-300 ${
+            className={`object-cover transition-opacity duration-500 ${
               isLoading ? "opacity-0" : "opacity-100"
             }`}
             sizes="(max-width: 1024px) 100vw, 60vw"
@@ -81,11 +100,21 @@ export default function VehicleGallery({
               }`}
               aria-label={`View image ${index + 1}`}
             >
+              {!loadedThumbnails[index] && (
+                <div
+                  className="absolute inset-0 z-10 animate-pulse bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800"
+                  aria-hidden="true"
+                />
+              )}
+
               <Image
                 src={image}
                 alt={`${year} ${name} thumbnail ${index + 1}`}
                 fill
-                className="object-cover"
+                onLoad={() => handleThumbnailLoad(index)}
+                className={`object-cover transition-opacity duration-300 ${
+                  loadedThumbnails[index] ? "opacity-100" : "opacity-0"
+                }`}
                 sizes="150px"
               />
             </button>

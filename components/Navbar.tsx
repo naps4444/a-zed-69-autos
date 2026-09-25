@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -18,7 +19,10 @@ const WHATSAPP_MESSAGE =
   "Hello A-ZED 69 Autos, I would like to make an enquiry about your vehicles and services.";
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
     WHATSAPP_MESSAGE
@@ -26,6 +30,39 @@ export default function Navbar() {
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+  };
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(target) &&
+        menuButtonRef.current &&
+        !menuButtonRef.current.contains(target)
+      ) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
+
+  const isActive = (href: string) => {
+    if (href === "/") return false;
+
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
   return (
@@ -48,17 +85,29 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden items-center gap-7 lg:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className="group relative text-sm font-medium text-gray-300 transition-colors duration-300 hover:text-white"
-            >
-              {link.name}
+          {navLinks.map((link) => {
+            const active = isActive(link.href);
 
-              <span className="absolute -bottom-2 left-0 h-0.5 w-0 bg-red-600 transition-all duration-300 group-hover:w-full" />
-            </Link>
-          ))}
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`group relative text-sm font-medium transition-colors duration-300 ${
+                  active
+                    ? "text-white"
+                    : "text-gray-300 hover:text-white"
+                }`}
+              >
+                {link.name}
+
+                <span
+                  className={`absolute -bottom-2 left-0 h-0.5 bg-red-600 transition-all duration-300 ${
+                    active ? "w-full" : "w-0 group-hover:w-full"
+                  }`}
+                />
+              </Link>
+            );
+          })}
         </div>
 
         <div className="hidden lg:block">
@@ -74,6 +123,7 @@ export default function Navbar() {
         </div>
 
         <button
+          ref={menuButtonRef}
           type="button"
           onClick={() => setIsMenuOpen((open) => !open)}
           className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/10 lg:hidden"
@@ -85,22 +135,37 @@ export default function Navbar() {
       </nav>
 
       <div
+        ref={mobileMenuRef}
         className={`overflow-hidden border-t border-white/10 bg-black transition-all duration-300 lg:hidden ${
           isMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <div className="mx-auto max-w-7xl px-5 pb-6 pt-3 sm:px-6">
           <div className="flex flex-col">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={closeMenu}
-                className="border-b border-white/10 py-4 text-base font-medium text-gray-300 transition-colors hover:text-white"
-              >
-                {link.name}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const active = isActive(link.href);
+
+              return (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={closeMenu}
+                  className={`border-b py-4 text-base font-medium transition-colors ${
+                    active
+                      ? "border-red-600/30 text-red-500"
+                      : "border-white/10 text-gray-300 hover:text-white"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span>{link.name}</span>
+
+                    {active && (
+                      <span className="h-2 w-2 rounded-full bg-red-600" />
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
 
             <a
               href={whatsappUrl}

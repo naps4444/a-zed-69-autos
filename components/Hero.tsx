@@ -1,5 +1,9 @@
+
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 const WHATSAPP_NUMBER = "2348085942475";
 
@@ -7,6 +11,8 @@ const WHATSAPP_MESSAGE =
   "Hello A-ZED 69 Autos, I would like to make an enquiry about your vehicles and services.";
 
 export default function Hero() {
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
     WHATSAPP_MESSAGE
   )}`;
@@ -45,8 +51,8 @@ export default function Hero() {
             </div>
 
             <h1 className="max-w-3xl text-5xl font-black uppercase leading-[0.94] tracking-[-0.04em] text-white sm:text-6xl lg:text-[4.5rem] xl:text-[5.2rem]">
-              Drive Into a{" "}
-              <span className="text-red-600">New Level</span> of Comfort.
+              Drive Into a <span className="text-red-600">New Level</span> of
+              Comfort.
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-7 text-gray-400 sm:text-lg sm:leading-8">
@@ -77,25 +83,10 @@ export default function Hero() {
             </div>
 
             <div className="mt-9 grid max-w-xl grid-cols-2 gap-y-6 border-t border-white/10 pt-6 sm:grid-cols-4 sm:gap-x-5">
-              <TrustPoint
-                value="Brand New"
-                label="Vehicles"
-              />
-
-              <TrustPoint
-                value="Foreign Used"
-                label="Vehicles"
-              />
-
-              <TrustPoint
-                value="Copart & IAAI"
-                label="Member"
-              />
-
-              <TrustPoint
-                value="RC 7370000"
-                label="Registered"
-              />
+              <TrustPoint value="Brand New" label="Vehicles" />
+              <TrustPoint value="Foreign Used" label="Vehicles" />
+              <TrustPoint value="Copart & IAAI" label="Member" />
+              <TrustPoint value="RC 7370000" label="Registered" />
             </div>
           </div>
 
@@ -106,12 +97,24 @@ export default function Hero() {
 
             <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-900 shadow-2xl">
               <div className="relative aspect-[4/3]">
+                {!imageLoaded && (
+                  <div
+                    className="absolute inset-0 z-10 animate-pulse bg-zinc-800"
+                    aria-hidden="true"
+                  >
+                    <div className="h-full w-full bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800" />
+                  </div>
+                )}
+
                 <Image
                   src="/images/hero/hero-car.png"
                   alt="Premium vehicle available from A-ZED 69 Autos"
                   fill
                   priority
-                  className="object-cover object-center transition-transform duration-700 hover:scale-[1.02]"
+                  onLoad={() => setImageLoaded(true)}
+                  className={`object-cover object-center transition-all duration-700 hover:scale-[1.02] ${
+                    imageLoaded ? "opacity-100" : "opacity-0"
+                  }`}
                   sizes="(max-width: 1024px) 100vw, 55vw"
                 />
 
