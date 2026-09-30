@@ -75,12 +75,12 @@ export default function Navbar() {
           aria-label="A-ZED 69 Autos Home"
         >
           <Image
-            src="/images/logo.png"
+            src="https://res.cloudinary.com/de24nkiyk/image/upload/v1790760828/Untitled_design_8.png"
             alt="A-ZED 69 Autos"
             width={190}
             height={55}
             priority
-            className="h-22 w-auto object-contain"
+            className="h-22 py-3 w-auto object-contain"
           />
         </Link>
 

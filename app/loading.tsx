@@ -22,9 +22,7 @@ export default function Loading() {
           className="text-red-600"
         />
 
-        <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.35em] text-gray-500">
-          Loading
-        </p>
+       
       </div>
     </div>
   );
