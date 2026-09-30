@@ -25,8 +25,13 @@ export default function VehicleGallery({
   const currentImage = images[activeImage] || images[0];
 
   const handleImageChange = (index: number) => {
+    if (index === activeImage) return;
+
     setIsLoading(true);
-    setActiveImage(index);
+
+    setTimeout(() => {
+      setActiveImage(index);
+    }, 200);
   };
 
   const handleThumbnailLoad = (index: number) => {

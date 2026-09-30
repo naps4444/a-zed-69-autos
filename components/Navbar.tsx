@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const navLinks = [
@@ -20,7 +20,11 @@ const WHATSAPP_MESSAGE =
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -32,8 +36,23 @@ export default function Navbar() {
     setIsMenuOpen(false);
   };
 
+  const handleNavigation = (href: string) => {
+    if (href === pathname) {
+      closeMenu();
+      return;
+    }
+
+    closeMenu();
+    setIsNavigating(true);
+
+    setTimeout(() => {
+      router.push(href);
+    }, 200);
+  };
+
   useEffect(() => {
     setIsMenuOpen(false);
+    setIsNavigating(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -66,82 +85,57 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/95 backdrop-blur-md">
-      <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
-        <Link
-          href="/"
-          onClick={closeMenu}
-          className="flex items-center"
-          aria-label="A-ZED 69 Autos Home"
-        >
-          <Image
-            src="https://res.cloudinary.com/de24nkiyk/image/upload/v1790760828/Untitled_design_8.png"
-            alt="A-ZED 69 Autos"
-            width={190}
-            height={55}
-            priority
-            className="h-22 py-3 w-auto object-contain"
-          />
-        </Link>
+    <>
+      {isNavigating && (
+        <div className="fixed inset-0 z-[9999] flex min-h-screen items-center justify-center bg-black">
+          <div className="flex flex-col items-center">
+            <div className="mb-8 text-center">
+              <p className="text-2xl font-black uppercase tracking-[0.2em] text-white">
+                A-ZED 69
+              </p>
 
-        <div className="hidden items-center gap-7 lg:flex">
-          {navLinks.map((link) => {
-            const active = isActive(link.href);
+              <p className="mt-2 text-xs font-bold uppercase tracking-[0.35em] text-red-600">
+                Autos
+              </p>
+            </div>
 
-            return (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`group relative text-sm font-medium transition-colors duration-300 ${
-                  active
-                    ? "text-white"
-                    : "text-gray-300 hover:text-white"
-                }`}
-              >
-                {link.name}
+            <div className="relative h-12 w-12">
+              <div className="absolute inset-0 animate-spin rounded-full border-4 border-white/10 border-t-red-600" />
+            </div>
 
-                <span
-                  className={`absolute -bottom-2 left-0 h-0.5 bg-red-600 transition-all duration-300 ${
-                    active ? "w-full" : "w-0 group-hover:w-full"
-                  }`}
-                />
-              </Link>
-            );
-          })}
+            <p className="mt-6 text-[10px] font-bold uppercase tracking-[0.35em] text-gray-500">
+              Loading
+            </p>
+          </div>
         </div>
+      )}
 
-        <div className="hidden lg:block">
-          <a
-            href={whatsappUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-bold text-white transition-all duration-300 hover:bg-red-700 hover:shadow-lg hover:shadow-red-600/20"
+      <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/95 backdrop-blur-md">
+        <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
+          <Link
+            href="/"
+            onClick={(event) => {
+              if (pathname !== "/") {
+                event.preventDefault();
+                handleNavigation("/");
+              } else {
+                closeMenu();
+              }
+            }}
+            className="flex items-center"
+            aria-label="A-ZED 69 Autos Home"
           >
-            <WhatsAppIcon />
-            WhatsApp Us
-          </a>
-        </div>
+            <Image
+              src="https://res.cloudinary.com/de24nkiyk/image/upload/v1790760828/Untitled_design_8.png"
+              alt="A-ZED 69 Autos"
+              width={190}
+              height={55}
+              priority
+              className="h-22 w-auto object-contain py-3"
+            />
+          </Link>
 
-        <button
-          ref={menuButtonRef}
-          type="button"
-          onClick={() => setIsMenuOpen((open) => !open)}
-          className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/10 lg:hidden"
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={isMenuOpen}
-        >
-          {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
-        </button>
-      </nav>
-
-      <div
-        ref={mobileMenuRef}
-        className={`overflow-hidden border-t border-white/10 bg-black transition-all duration-300 lg:hidden ${
-          isMenuOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <div className="mx-auto max-w-7xl px-5 pb-6 pt-3 sm:px-6">
-          <div className="flex flex-col">
+          <div className="hidden items-center gap-7 lg:flex">
             {navLinks.map((link) => {
               const active = isActive(link.href);
 
@@ -149,38 +143,111 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  onClick={closeMenu}
-                  className={`border-b py-4 text-base font-medium transition-colors ${
+                  onClick={(event) => {
+                    if (link.href !== pathname) {
+                      event.preventDefault();
+                      handleNavigation(link.href);
+                    }
+                  }}
+                  className={`group relative text-sm font-medium transition-colors duration-300 ${
                     active
-                      ? "border-red-600/30 text-red-500"
-                      : "border-white/10 text-gray-300 hover:text-white"
+                      ? "text-white"
+                      : "text-gray-300 hover:text-white"
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <span>{link.name}</span>
+                  {link.name}
 
-                    {active && (
-                      <span className="h-2 w-2 rounded-full bg-red-600" />
-                    )}
-                  </div>
+                  <span
+                    className={`absolute -bottom-2 left-0 h-0.5 bg-red-600 transition-all duration-300 ${
+                      active ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  />
                 </Link>
               );
             })}
+          </div>
 
+          <div className="hidden lg:block">
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={closeMenu}
-              className="mt-5 flex items-center justify-center gap-2 rounded-full bg-red-600 px-5 py-3.5 text-sm font-bold text-white transition-colors hover:bg-red-700"
+              className="inline-flex items-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-bold text-white transition-all duration-300 hover:bg-red-700 hover:shadow-lg hover:shadow-red-600/20"
             >
               <WhatsAppIcon />
-              Chat With Us on WhatsApp
+              WhatsApp Us
             </a>
           </div>
+
+          <button
+            ref={menuButtonRef}
+            type="button"
+            onClick={() => setIsMenuOpen((open) => !open)}
+            className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/10 lg:hidden"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMenuOpen}
+          >
+            {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
+          </button>
+        </nav>
+
+        <div
+          ref={mobileMenuRef}
+          className={`overflow-hidden border-t border-white/10 bg-black transition-all duration-300 lg:hidden ${
+            isMenuOpen
+              ? "max-h-[500px] opacity-100"
+              : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className="mx-auto max-w-7xl px-5 pb-6 pt-3 sm:px-6">
+            <div className="flex flex-col">
+              {navLinks.map((link) => {
+                const active = isActive(link.href);
+
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={(event) => {
+                      if (link.href !== pathname) {
+                        event.preventDefault();
+                        handleNavigation(link.href);
+                      } else {
+                        closeMenu();
+                      }
+                    }}
+                    className={`border-b py-4 text-base font-medium transition-colors ${
+                      active
+                        ? "border-red-600/30 text-red-500"
+                        : "border-white/10 text-gray-300 hover:text-white"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span>{link.name}</span>
+
+                      {active && (
+                        <span className="h-2 w-2 rounded-full bg-red-600" />
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
+
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closeMenu}
+                className="mt-5 flex items-center justify-center gap-2 rounded-full bg-red-600 px-5 py-3.5 text-sm font-bold text-white transition-colors hover:bg-red-700"
+              >
+                <WhatsAppIcon />
+                Chat With Us on WhatsApp
+              </a>
+            </div>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </>
   );
 }
 
