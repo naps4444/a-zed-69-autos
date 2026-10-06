@@ -2,6 +2,53 @@ import type { Vehicle } from "@/components/VehicleCard";
 
 export const vehicles: Vehicle[] = [
 
+
+{
+  id: "mercedes-benz-gle-350-2018",
+  name: "Mercedes-Benz GLE 350",
+  year: 2018,
+  condition: "Foreign Used",
+  price: "₦36,000,000",
+  location: "Lagos, Nigeria",
+  image: "https://res.cloudinary.com/de24nkiyk/image/upload/v1791320380/WhatsApp_Image_2026-10-06_at_11.04.42_4.jpg",
+  images: [
+    "https://res.cloudinary.com/de24nkiyk/image/upload/v1791320380/WhatsApp_Image_2026-10-06_at_11.04.42_4.jpg",
+    "https://res.cloudinary.com/de24nkiyk/image/upload/v1791320377/WhatsApp_Image_2026-10-06_at_11.04.40_3.jpg",
+    "https://res.cloudinary.com/de24nkiyk/image/upload/v1791320373/WhatsApp_Image_2026-10-06_at_11.04.41_2.jpg",
+    "https://res.cloudinary.com/de24nkiyk/image/upload/v1791320372/WhatsApp_Image_2026-10-06_at_11.04.41.jpg",
+    "https://res.cloudinary.com/de24nkiyk/image/upload/v1791320380/WhatsApp_Image_2026-10-06_at_11.04.41_1.jpg",
+    "https://res.cloudinary.com/de24nkiyk/image/upload/v1791320375/WhatsApp_Image_2026-10-06_at_11.04.42_2.jpg",
+    "https://res.cloudinary.com/de24nkiyk/image/upload/v1791320376/WhatsApp_Image_2026-10-06_at_11.04.42_3.jpg",
+  ],
+  featured: true,
+  transmission: "Automatic",
+  fuelType: "Petrol",
+},
+
+
+{
+  id: "toyota-camry-trd-2021",
+  name: "Toyota Camry TRD",
+  year: 2021,
+  condition: "Foreign Used",
+  price: "₦33,000,000",
+  location: "Lagos, Nigeria",
+  image: "https://res.cloudinary.com/de24nkiyk/image/upload/v1791319734/WhatsApp_Image_2026-10-06_at_11.02.50_1.jpg",
+  images: [
+    "https://res.cloudinary.com/de24nkiyk/image/upload/v1791319734/WhatsApp_Image_2026-10-06_at_11.02.50_1.jpg",
+    "https://res.cloudinary.com/de24nkiyk/image/upload/v1791319733/WhatsApp_Image_2026-10-06_at_11.02.53_1.jpg",
+    "https://res.cloudinary.com/de24nkiyk/image/upload/v1791319734/WhatsApp_Image_2026-10-06_at_11.02.51_1.jpg",
+    "https://res.cloudinary.com/de24nkiyk/image/upload/v1791319728/WhatsApp_Image_2026-10-06_at_11.02.51.jpg",
+    "https://res.cloudinary.com/de24nkiyk/image/upload/v1791319735/WhatsApp_Image_2026-10-06_at_11.02.52_1.jpg",
+    "https://res.cloudinary.com/de24nkiyk/image/upload/v1791319738/WhatsApp_Image_2026-10-06_at_11.02.50_2.jpg",
+    "https://res.cloudinary.com/de24nkiyk/image/upload/v1791319735/WhatsApp_Image_2026-10-06_at_11.02.52_2.jpg",
+    "https://res.cloudinary.com/de24nkiyk/image/upload/v1791319730/WhatsApp_Image_2026-10-06_at_11.02.52_5.jpg",
+  ],
+  featured: true,
+  transmission: "Automatic",
+  fuelType: "Petrol",
+},
+
   {
 id: "lexus-rx-350-2020",
 name: "Lexus RX 350",

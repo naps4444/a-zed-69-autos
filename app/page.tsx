@@ -17,8 +17,9 @@ export default function Home() {
 
       <main>
         <Hero />
-        <ServicesSection />
+        
         <FeaturedVehicles />
+        <ServicesSection />
         <HowItWorks />        
         <AboutSection />
         <WhyChooseUs />
