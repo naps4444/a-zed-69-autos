@@ -333,25 +333,7 @@ fuelType: "Petrol",
   },
  
 
-  {
-    id: "toyota-2026",
-    name: "Toyota",
-    year: 2026,
-    condition: "Brand New",
-    price: "45000000",
-    location: "Lagos",
-    image: "https://res.cloudinary.com/de24nkiyk/image/upload/v1791374900/qrayhzmpy9kl8j8c9wrh.jpg",
-    images: [
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791374900/qrayhzmpy9kl8j8c9wrh.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791374903/z02uclgsvehennn4zzm4.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791374905/hsr4vyxuwaqa3l3kzwlo.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791374909/rlkf2bh7ktploh2fqw2x.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791374911/zx6grkukljdu4anlfy9x.jpg"
-    ],
-    featured: true,
-    transmission: "Automatic",
-    fuelType: "Hybrid",
-  },
+  
 
   
 
