@@ -1,6 +1,25 @@
 ﻿import type { Vehicle } from "@/components/VehicleCard";
 
 export const vehicles: Vehicle[] = [
+  {
+    id: "toyota-2018",
+    name: "Toyota",
+    year: 2018,
+    condition: "Foreign Used",
+    price: "₦28,000,000",
+    location: "Lagos, Nigeria",
+    image: "https://res.cloudinary.com/de24nkiyk/image/upload/v1791390912/xrcgsjhzxcnh169txd5c.jpg",
+    images: [
+      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791390912/xrcgsjhzxcnh169txd5c.jpg",
+      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791390916/jkebxijxfqcg8clquzv3.jpg",
+      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791390918/vx85srn9doye5yxlhpuz.jpg",
+      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791390925/eibliazja994igoh7jqi.jpg"
+    ],
+    featured: true,
+    transmission: "Automatic",
+    fuelType: "Petrol",
+  },
+
   
 
   
