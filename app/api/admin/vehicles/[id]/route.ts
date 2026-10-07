@@ -4,10 +4,7 @@ import { auth } from "@/auth";
 const githubApiBase = "https://api.github.com";
 
 function decodeBase64(value: string) {
-  return Buffer.from(
-    value.replace(/\n/g, ""),
-    "base64"
-  ).toString("utf8");
+  return Buffer.from(value.replace(/\n/g, ""), "base64").toString("utf8");
 }
 
 function getGithubConfig() {
@@ -17,9 +14,7 @@ function getGithubConfig() {
   const branch = process.env.GITHUB_BRANCH || "main";
 
   if (!token || !owner || !repo) {
-    throw new Error(
-      "GitHub environment variables are not configured."
-    );
+    throw new Error("GitHub environment variables are not configured.");
   }
 
   return {
@@ -31,12 +26,7 @@ function getGithubConfig() {
 }
 
 async function getVehiclesFile() {
-  const {
-    token,
-    owner,
-    repo,
-    branch,
-  } = getGithubConfig();
+  const { token, owner, repo, branch } = getGithubConfig();
 
   const url = `${githubApiBase}/repos/${owner}/${repo}/contents/data/vehicles.ts?ref=${encodeURIComponent(
     branch
@@ -55,8 +45,7 @@ async function getVehiclesFile() {
 
   if (!response.ok) {
     throw new Error(
-      data.message ||
-        "Could not read vehicles from GitHub."
+      data.message || "Could not read vehicles from GitHub."
     );
   }
 
@@ -70,14 +59,12 @@ async function getVehiclesFile() {
   };
 }
 
-function findVehicleBlock(
-  content: string,
-  id: string
-) {
-  const escapedId = id.replace(
-    /[.*+?^${}()|[\]\\]/g,
-    "\\$&"
-  );
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function findVehicleBlock(content: string, id: string) {
+  const escapedId = escapeRegExp(id);
 
   const pattern = new RegExp(
     `\\{\\s*id:\\s*["']${escapedId}["'][\\s\\S]*?\\n\\s*\\},?`,
@@ -96,36 +83,25 @@ function findVehicleBlock(
   };
 }
 
-function parseQuotedField(
-  block: string,
-  field: string
-) {
+function parseQuotedField(block: string, field: string) {
   const pattern = new RegExp(
-    `${field}:\\s*["']([^"']*)["']`
+    `${escapeRegExp(field)}:\\s*["']([^"']*)["']`
   );
 
   return block.match(pattern)?.[1] || "";
 }
 
-function parseNumberField(
-  block: string,
-  field: string
-) {
+function parseNumberField(block: string, field: string) {
   const pattern = new RegExp(
-    `${field}:\\s*(\\d+)`
+    `${escapeRegExp(field)}:\\s*(\\d+)`
   );
 
-  return Number(
-    block.match(pattern)?.[1] || 0
-  );
+  return Number(block.match(pattern)?.[1] || 0);
 }
 
-function parseBooleanField(
-  block: string,
-  field: string
-) {
+function parseBooleanField(block: string, field: string) {
   const pattern = new RegExp(
-    `${field}:\\s*(true|false)`
+    `${escapeRegExp(field)}:\\s*(true|false)`
   );
 
   return block.match(pattern)?.[1] === "true";
@@ -154,33 +130,76 @@ function parseVehicle(block: string) {
     id: parseQuotedField(block, "id"),
     name: parseQuotedField(block, "name"),
     year: parseNumberField(block, "year"),
-    condition: parseQuotedField(
-      block,
-      "condition"
-    ),
+    condition: parseQuotedField(block, "condition"),
     price: parseQuotedField(block, "price"),
-    location: parseQuotedField(
-      block,
-      "location"
-    ),
+    location: parseQuotedField(block, "location"),
     image:
       parseQuotedField(block, "image") ||
       images[0] ||
       "",
     images,
-    featured: parseBooleanField(
-      block,
-      "featured"
-    ),
-    transmission: parseQuotedField(
-      block,
-      "transmission"
-    ),
-    fuelType: parseQuotedField(
-      block,
-      "fuelType"
-    ),
+    featured: parseBooleanField(block, "featured"),
+    transmission: parseQuotedField(block, "transmission"),
+    fuelType: parseQuotedField(block, "fuelType"),
   };
+}
+
+function validateVehiclesFile(content: string) {
+  const arrayMarker = "export const vehicles: Vehicle[] = [";
+
+  if (!content.includes(arrayMarker)) {
+    throw new Error(
+      "Safety check failed: vehicles array declaration is missing."
+    );
+  }
+
+  if (!content.includes("];")) {
+    throw new Error(
+      "Safety check failed: vehicles array closing bracket is missing."
+    );
+  }
+
+  const malformedDeclaration =
+    /export const vehicles:\s*Vehicle\[\s*\{/;
+
+  if (malformedDeclaration.test(content)) {
+    throw new Error(
+      "Safety check failed: vehicles array declaration is malformed."
+    );
+  }
+
+  const malformedClosing =
+    /\},\s*\]\s*=\s*\[/;
+
+  if (malformedClosing.test(content)) {
+    throw new Error(
+      "Safety check failed: malformed vehicles array structure detected."
+    );
+  }
+
+  const vehicleIds = [
+    ...content.matchAll(
+      /id:\s*["']([^"']+)["']/g
+    ),
+  ].map((match) => match[1]);
+
+  if (vehicleIds.length === 0) {
+    throw new Error(
+      "Safety check failed: no vehicles were found in vehicles.ts."
+    );
+  }
+
+  const duplicateIds = vehicleIds.filter(
+    (id, index) => vehicleIds.indexOf(id) !== index
+  );
+
+  if (duplicateIds.length > 0) {
+    throw new Error(
+      `Safety check failed: duplicate vehicle ID detected: ${duplicateIds[0]}`
+    );
+  }
+
+  return true;
 }
 
 async function commitVehiclesFile(
@@ -188,12 +207,9 @@ async function commitVehiclesFile(
   sha: string,
   message: string
 ) {
-  const {
-    token,
-    owner,
-    repo,
-    branch,
-  } = getGithubConfig();
+  validateVehiclesFile(content);
+
+  const { token, owner, repo, branch } = getGithubConfig();
 
   const url = `${githubApiBase}/repos/${owner}/${repo}/contents/data/vehicles.ts`;
 
@@ -207,9 +223,7 @@ async function commitVehiclesFile(
     },
     body: JSON.stringify({
       message,
-      content: Buffer.from(content).toString(
-        "base64"
-      ),
+      content: Buffer.from(content, "utf8").toString("base64"),
       sha,
       branch,
     }),
@@ -219,12 +233,65 @@ async function commitVehiclesFile(
 
   if (!response.ok) {
     throw new Error(
-      data.message ||
-        "Could not update vehicles on GitHub."
+      data.message || "Could not update vehicles on GitHub."
     );
   }
 
   return data;
+}
+
+function createVehicleId(name: string, year: number) {
+  return `${String(name)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")}-${year}`;
+}
+
+function escapeString(value: unknown) {
+  return String(value)
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/\r/g, "\\r")
+    .replace(/\n/g, "\\n");
+}
+
+function buildVehicleBlock({
+  id,
+  name,
+  year,
+  condition,
+  price,
+  location,
+  images,
+  featured,
+  transmission,
+  fuelType,
+}: {
+  id: string;
+  name: string;
+  year: number;
+  condition: string;
+  price: string;
+  location: string;
+  images: string[];
+  featured: boolean;
+  transmission: string;
+  fuelType: string;
+}) {
+  return `{
+    id: "${escapeString(id)}",
+    name: "${escapeString(name)}",
+    year: ${Number(year)},
+    condition: "${escapeString(condition)}",
+    price: "${escapeString(price)}",
+    location: "${escapeString(location)}",
+    image: "${escapeString(images[0])}",
+    images: ${JSON.stringify(images, null, 2)},
+    featured: ${Boolean(featured)},
+    transmission: "${escapeString(transmission)}",
+    fuelType: "${escapeString(fuelType)}",
+  },`;
 }
 
 export async function GET(
@@ -245,10 +312,10 @@ export async function GET(
   try {
     const { id } = await context.params;
     const file = await getVehiclesFile();
-    const vehicleBlock = findVehicleBlock(
-      file.content,
-      id
-    );
+
+    validateVehiclesFile(file.content);
+
+    const vehicleBlock = findVehicleBlock(file.content, id);
 
     if (!vehicleBlock) {
       return NextResponse.json(
@@ -258,15 +325,10 @@ export async function GET(
     }
 
     return NextResponse.json({
-      vehicle: parseVehicle(
-        vehicleBlock.text
-      ),
+      vehicle: parseVehicle(vehicleBlock.text),
     });
   } catch (error) {
-    console.error(
-      "Get vehicle error:",
-      error
-    );
+    console.error("Get vehicle error:", error);
 
     return NextResponse.json(
       {
@@ -329,11 +391,24 @@ export async function PUT(
       );
     }
 
+    if (
+      !images.every(
+        (image: unknown) => typeof image === "string" && image.trim()
+      )
+    ) {
+      return NextResponse.json(
+        {
+          error: "All vehicle images must be valid image URLs.",
+        },
+        { status: 400 }
+      );
+    }
+
     const file = await getVehiclesFile();
-    const vehicleBlock = findVehicleBlock(
-      file.content,
-      id
-    );
+
+    validateVehiclesFile(file.content);
+
+    const vehicleBlock = findVehicleBlock(file.content, id);
 
     if (!vehicleBlock) {
       return NextResponse.json(
@@ -342,17 +417,10 @@ export async function PUT(
       );
     }
 
-    const newId = `${name
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "")}-${year}`;
+    const newId = createVehicleId(name, Number(year));
 
     if (newId !== id) {
-      const duplicate = findVehicleBlock(
-        file.content,
-        newId
-      );
+      const duplicate = findVehicleBlock(file.content, newId);
 
       if (duplicate) {
         return NextResponse.json(
@@ -365,30 +433,27 @@ export async function PUT(
       }
     }
 
-    const newVehicle = `{
-    id: "${newId}",
-    name: "${String(name).replace(/"/g, '\\"')}",
-    year: ${Number(year)},
-    condition: "${String(condition).replace(/"/g, '\\"')}",
-    price: "${String(price).replace(/"/g, '\\"')}",
-    location: "${String(location).replace(/"/g, '\\"')}",
-    image: "${String(images[0]).replace(/"/g, '\\"')}",
-    images: ${JSON.stringify(images, null, 2)},
-    featured: ${Boolean(featured)},
-    transmission: "${String(transmission || "Automatic").replace(/"/g, '\\"')}",
-    fuelType: "${String(fuelType || "Petrol").replace(/"/g, '\\"')}",
-  },`;
+    const newVehicle = buildVehicleBlock({
+      id: newId,
+      name,
+      year: Number(year),
+      condition,
+      price,
+      location,
+      images,
+      featured: Boolean(featured),
+      transmission: transmission || "Automatic",
+      fuelType: fuelType || "Petrol",
+    });
 
     const updatedContent =
-      file.content.slice(
-        0,
-        vehicleBlock.index
-      ) +
+      file.content.slice(0, vehicleBlock.index) +
       newVehicle +
       file.content.slice(
-        vehicleBlock.index +
-          vehicleBlock.text.length
+        vehicleBlock.index + vehicleBlock.text.length
       );
+
+    validateVehiclesFile(updatedContent);
 
     const commit = await commitVehiclesFile(
       updatedContent,
@@ -402,10 +467,7 @@ export async function PUT(
       commitSha: commit.commit?.sha,
     });
   } catch (error) {
-    console.error(
-      "Update vehicle error:",
-      error
-    );
+    console.error("Update vehicle error:", error);
 
     return NextResponse.json(
       {
@@ -438,10 +500,9 @@ export async function DELETE(
     const { id } = await context.params;
     const file = await getVehiclesFile();
 
-    const vehicleBlock = findVehicleBlock(
-      file.content,
-      id
-    );
+    validateVehiclesFile(file.content);
+
+    const vehicleBlock = findVehicleBlock(file.content, id);
 
     if (!vehicleBlock) {
       return NextResponse.json(
@@ -450,24 +511,20 @@ export async function DELETE(
       );
     }
 
-    const vehicle = parseVehicle(
-      vehicleBlock.text
+    const vehicle = parseVehicle(vehicleBlock.text);
+
+    const before = file.content.slice(
+      0,
+      vehicleBlock.index
     );
 
-    const before =
-      file.content.slice(
-        0,
-        vehicleBlock.index
-      );
+    const after = file.content.slice(
+      vehicleBlock.index + vehicleBlock.text.length
+    );
 
-    const after =
-      file.content.slice(
-        vehicleBlock.index +
-          vehicleBlock.text.length
-      );
+    const updatedContent = before + after;
 
-    const updatedContent =
-      before + after;
+    validateVehiclesFile(updatedContent);
 
     const commit = await commitVehiclesFile(
       updatedContent,
@@ -484,10 +541,7 @@ export async function DELETE(
       commitSha: commit.commit?.sha,
     });
   } catch (error) {
-    console.error(
-      "Delete vehicle error:",
-      error
-    );
+    console.error("Delete vehicle error:", error);
 
     return NextResponse.json(
       {
