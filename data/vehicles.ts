@@ -1,6 +1,6 @@
 ﻿import type { Vehicle } from "@/components/VehicleCard";
 
-export const vehicles: Vehicle[
+export const vehicles: Vehicle[] = [
   {
     id: "mazda-2022",
     name: "mazda",
@@ -20,8 +20,6 @@ export const vehicles: Vehicle[
     transmission: "Automatic",
     fuelType: "Petrol",
   },
-] = [
-
 
 {
   id: "mercedes-benz-gle-350-2018",
@@ -359,3 +357,4 @@ fuelType: "Petrol",
 
   
 ];
+
