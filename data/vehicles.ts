@@ -337,24 +337,5 @@ fuelType: "Petrol",
 
   
 
-  {
-    id: "honda-2022",
-    name: "Honda",
-    year: 2022,
-    condition: "Foreign Used",
-    price: "₦23,444,900",
-    location: "Lagos, Nigeria",
-    image: "https://res.cloudinary.com/de24nkiyk/image/upload/v1791378657/hl1kyqkbjgjwujfr9y7z.jpg",
-    images: [
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791378657/hl1kyqkbjgjwujfr9y7z.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791378661/pv6yp8bkcxoygccjubqw.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791378663/cvaxtfi4abxlrhyeflid.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791378665/doso3zxyqlvtska9ym4u.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791378666/oplrw2bdm13dlqbgmxh5.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791378668/an34xehuxobuvtjys5zp.jpg"
-    ],
-    featured: false,
-    transmission: "Automatic",
-    fuelType: "Petrol",
-  },
+  
 ];
