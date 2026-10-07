@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LocationMap from "@/components/LocationMap";
 
 const whatsappNumber = "2348085942475";
 const whatsappMessage =
@@ -145,6 +146,20 @@ export default function Footer() {
               </a>
             </div>
           </div>
+        </div>
+
+        <div className="mt-16">
+          <div className="mb-5">
+            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-red-500">
+              Find Us
+            </h3>
+
+            <p className="mt-2 text-sm text-gray-400">
+              Visit A-ZED 69 Autos at our car stand in IJU, Lagos.
+            </p>
+          </div>
+
+          <LocationMap />
         </div>
 
         <div className="mt-14 border-t border-white/10 pt-7">
