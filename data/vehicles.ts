@@ -3,25 +3,7 @@
 export const vehicles: Vehicle[] = [
   
 
-  {
-    id: "mazda-2022",
-    name: "mazda",
-    year: 2022,
-    condition: "Foreign Used",
-    price: "₦43,000,000",
-    location: "Lagos, Nigeria",
-    image: "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384620/uzjyahcrgsfqfthzoxlg.jpg",
-    images: [
-  "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384620/uzjyahcrgsfqfthzoxlg.jpg",
-  "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384625/tc8ysw9vvc72l35p9bv6.jpg",
-  "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384630/ucxq1unzxivhlieljnaz.jpg",
-  "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384633/qptbaydwksqzddkrnrkp.jpg",
-  "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384636/mvfzsxndgr7h8aw06qby.jpg"
-],
-    featured: true,
-    transmission: "Automatic",
-    fuelType: "Petrol",
-  },
+  
 
 {
   id: "mercedes-benz-gle-350-2018",
