@@ -145,7 +145,9 @@ export async function POST(request: Request) {
     image: ${JSON.stringify(imageUrls[0])},
     images: ${JSON.stringify(imageUrls, null, 2)
       .split("\n")
-      .map((line, index) => (index === 0 ? line : `    ${line}`))
+      .map((line, index) =>
+        index === 0 ? line : `    ${line}`
+      )
       .join("\n")},
     featured: ${body.featured},
     transmission: ${JSON.stringify(body.transmission)},
@@ -153,22 +155,25 @@ export async function POST(request: Request) {
   },
 `;
 
-    const arrayStart = currentContent.indexOf("[");
+    const arrayMarker = "export const vehicles: Vehicle[] = [";
+    const arrayStart = currentContent.indexOf(arrayMarker);
 
     if (arrayStart === -1) {
       return NextResponse.json(
         {
           error:
-            "Could not find the beginning of the vehicles array in data/vehicles.ts.",
+            "Could not find the vehicles array in data/vehicles.ts.",
         },
         { status: 500 }
       );
     }
 
+    const insertPosition = arrayStart + arrayMarker.length;
+
     const updatedContent =
-      currentContent.slice(0, arrayStart + 1) +
+      currentContent.slice(0, insertPosition) +
       newVehicle +
-      currentContent.slice(arrayStart + 1);
+      currentContent.slice(insertPosition);
 
     const commitResponse = await fetch(fileUrl, {
       method: "PUT",
