@@ -24,12 +24,12 @@ const markerIcon = L.icon({
 
 export default function MapContent() {
   return (
-    <div className="h-[400px] w-full overflow-hidden rounded-2xl border border-white/10">
+    <div className="relative z-0 h-[400px] w-full overflow-hidden rounded-2xl border border-white/10">
       <MapContainer
         center={position}
         zoom={17}
         scrollWheelZoom={false}
-        className="h-full w-full"
+        className="relative z-0 h-full w-full"
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -58,7 +58,22 @@ export default function MapContent() {
         }
 
         .leaflet-container {
+          position: relative;
+          z-index: 0 !important;
           background: #080808;
+        }
+
+        .leaflet-pane {
+          z-index: 1 !important;
+        }
+
+        .leaflet-top,
+        .leaflet-bottom {
+          z-index: 2 !important;
+        }
+
+        .leaflet-popup {
+          z-index: 3 !important;
         }
 
         .leaflet-popup-content-wrapper,

@@ -162,20 +162,11 @@ function validateVehiclesFile(content: string) {
   }
 
   const malformedDeclaration =
-    /export const vehicles:\s*Vehicle\[\s*\{/;
+    /export const vehicles:\s*Vehicle\[\]\s*\{/;
 
   if (malformedDeclaration.test(content)) {
     throw new Error(
       "Safety check failed: vehicles array declaration is malformed."
-    );
-  }
-
-  const malformedClosing =
-    /\},\s*\]\s*=\s*\[/;
-
-  if (malformedClosing.test(content)) {
-    throw new Error(
-      "Safety check failed: malformed vehicles array structure detected."
     );
   }
 
@@ -313,11 +304,15 @@ export async function GET(
 
   try {
     const { id } = await context.params;
+
     const file = await getVehiclesFile();
 
     validateVehiclesFile(file.content);
 
-    const vehicleBlock = findVehicleBlock(file.content, id);
+    const vehicleBlock = findVehicleBlock(
+      file.content,
+      id
+    );
 
     if (!vehicleBlock) {
       return NextResponse.json(
@@ -361,6 +356,7 @@ export async function PUT(
 
   try {
     const { id } = await context.params;
+
     const body = await request.json();
 
     const {
@@ -401,7 +397,8 @@ export async function PUT(
     ) {
       return NextResponse.json(
         {
-          error: "All vehicle images must be valid image URLs.",
+          error:
+            "All vehicle images must be valid image URLs.",
         },
         { status: 400 }
       );
@@ -411,7 +408,10 @@ export async function PUT(
 
     validateVehiclesFile(file.content);
 
-    const vehicleBlock = findVehicleBlock(file.content, id);
+    const vehicleBlock = findVehicleBlock(
+      file.content,
+      id
+    );
 
     if (!vehicleBlock) {
       return NextResponse.json(
@@ -508,6 +508,7 @@ export async function DELETE(
 
   try {
     const { id } = await context.params;
+
     const file = await getVehiclesFile();
 
     validateVehiclesFile(file.content);

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { faqs } from "@/data/faqs";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const WHATSAPP_NUMBER = "2348085942475";
 
@@ -240,6 +241,8 @@ export default function FAQPage() {
           </div>
         </div>
       </section>
+
+      <Footer />
     </main>
   );
 }

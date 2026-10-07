@@ -3,6 +3,7 @@
 import { FormEvent } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const WHATSAPP_NUMBER = "2348085942475";
 
@@ -434,6 +435,8 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
+
+      <Footer />
 
       <style jsx global>{`
         .form-input {

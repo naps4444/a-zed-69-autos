@@ -5,6 +5,24 @@ const whatsappNumber = "2348085942475";
 const whatsappMessage =
   "Hello A-ZED 69 Autos, I would like to make an enquiry about your vehicles and services.";
 
+const socialLinks = [
+  {
+    name: "TikTok",
+    handle: "@azed69autos_",
+    href: "https://www.tiktok.com/@azed69autos_",
+  },
+  {
+    name: "Instagram",
+    handle: "@Azed69autoslimited",
+    href: "https://www.instagram.com/Azed69autoslimited",
+  },
+  {
+    name: "X",
+    handle: "@A_zed_69_autos",
+    href: "https://x.com/A_zed_69_autos",
+  },
+];
+
 export default function Footer() {
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
     whatsappMessage
@@ -148,7 +166,48 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-16">
+        {/* Social Media */}
+        <div className="mt-14 border-t border-white/10 pt-10">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-red-500">
+                Follow A-ZED 69 Autos
+              </h3>
+
+              <p className="mt-2 text-sm text-gray-400">
+                Follow us for vehicle updates, arrivals, offers, and more.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-all duration-300 hover:border-red-600/40 hover:bg-red-600"
+                >
+                  <div className="flex items-center gap-3">
+                    <SocialIcon name={social.name} />
+
+                    <div>
+                      <p className="text-xs font-bold uppercase tracking-wider text-gray-400 transition-colors group-hover:text-red-100">
+                        {social.name}
+                      </p>
+
+                      <p className="mt-0.5 text-sm font-bold text-white">
+                        {social.handle}
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-14">
           <div className="mb-5">
             <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-red-500">
               Find Us
@@ -177,6 +236,77 @@ export default function Footer() {
         </div>
       </div>
     </footer>
+  );
+}
+
+function SocialIcon({ name }: { name: string }) {
+  if (name === "Instagram") {
+    return (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <rect
+          x="3"
+          y="3"
+          width="18"
+          height="18"
+          rx="5"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        />
+
+        <circle
+          cx="12"
+          cy="12"
+          r="4"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        />
+
+        <circle
+          cx="17.5"
+          cy="6.5"
+          r="1"
+          fill="currentColor"
+        />
+      </svg>
+    );
+  }
+
+  if (name === "TikTok") {
+    return (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <path
+          d="M15 4C15.4 6.4 16.8 7.8 19 8.2V11C17.5 10.9 16.1 10.4 15 9.5V15.5C15 18.5 12.8 20 10.2 20C7.4 20 5.5 18.2 5.5 15.7C5.5 13.1 7.5 11.2 10.2 11.2C10.6 11.2 11 11.2 11.4 11.4V14.3C11 14.1 10.6 14 10.2 14C9.2 14 8.5 14.7 8.5 15.7C8.5 16.6 9.2 17.3 10.2 17.3C11.3 17.3 12 16.6 12 15.3V4H15Z"
+          fill="currentColor"
+        />
+      </svg>
+    );
+  }
+
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path d="M18.244 2H21.5L14.385 10.13L22.75 22H16.2L11.07 15.1L5.03 22H1.77L9.38 13.3L1.35 2H8.06L12.69 8.3L18.244 2ZM17.1 19.92H18.9L7.08 3.97H5.15L17.1 19.92Z" />
+    </svg>
   );
 }
 

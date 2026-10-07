@@ -17,6 +17,7 @@ interface VehicleForm {
   transmission: string;
   fuelType: string;
   featured: boolean;
+  sold: boolean;
   images: UploadedVehicleImage[];
 }
 
@@ -50,6 +51,7 @@ export default function NewVehiclePage() {
     transmission: "Automatic",
     fuelType: "Petrol",
     featured: false,
+    sold: false,
     images: [],
   });
 
@@ -131,6 +133,7 @@ export default function NewVehiclePage() {
           transmission: form.transmission,
           fuelType: form.fuelType,
           featured: form.featured,
+          sold: form.sold,
           images: form.images,
         }),
       });
@@ -154,6 +157,7 @@ export default function NewVehiclePage() {
         transmission: "Automatic",
         fuelType: "Petrol",
         featured: false,
+        sold: false,
         images: [],
       });
     } catch (publishError) {
@@ -281,7 +285,7 @@ export default function NewVehiclePage() {
                 options={["Petrol", "Diesel", "Hybrid", "Electric"]}
               />
 
-              <div className="flex items-center sm:col-span-2">
+              <div className="flex flex-col gap-5 sm:col-span-2">
                 <label className="flex cursor-pointer items-center gap-3">
                   <input
                     type="checkbox"
@@ -302,6 +306,51 @@ export default function NewVehiclePage() {
                     </span>
                   </span>
                 </label>
+
+                <div className="flex items-center justify-between rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+                  <div>
+                    <span className="block text-sm font-bold text-black">
+                      Sold Vehicle
+                    </span>
+
+                    <span className="mt-1 block text-xs leading-5 text-zinc-500">
+                      Turn this on when the vehicle has been sold.
+                    </span>
+
+                    <span
+                      className={`mt-2 inline-block text-[10px] font-black uppercase tracking-widest ${
+                        form.sold
+                          ? "text-red-600"
+                          : "text-green-600"
+                      }`}
+                    >
+                      {form.sold ? "SOLD" : "FOR SALE"}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={form.sold}
+                    aria-label="Mark vehicle as sold"
+                    onClick={() =>
+                      updateField("sold", !form.sold)
+                    }
+                    className={`relative h-7 w-12 shrink-0 rounded-full transition-colors duration-200 ${
+                      form.sold
+                        ? "bg-red-600"
+                        : "bg-zinc-300"
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                        form.sold
+                          ? "translate-x-6"
+                          : "translate-x-1"
+                      }`}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
           </div>

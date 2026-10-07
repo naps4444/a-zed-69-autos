@@ -18,6 +18,7 @@ interface VehicleForm {
   transmission: string;
   fuelType: string;
   featured: boolean;
+  sold: boolean;
   images: UploadedVehicleImage[];
 }
 
@@ -83,7 +84,10 @@ function normalizeImages(
     });
   }
 
-  if (normalized.length === 0 && typeof fallbackImage === "string") {
+  if (
+    normalized.length === 0 &&
+    typeof fallbackImage === "string"
+  ) {
     const trimmedFallback = fallbackImage.trim();
 
     if (
@@ -104,7 +108,6 @@ function normalizeImages(
 export default function EditVehiclePage() {
   const params = useParams();
   const router = useRouter();
-
   const id = String(params.id);
 
   const [form, setForm] = useState<VehicleForm>({
@@ -116,6 +119,7 @@ export default function EditVehiclePage() {
     transmission: "Automatic",
     fuelType: "Petrol",
     featured: false,
+    sold: false,
     images: [],
   });
 
@@ -162,6 +166,7 @@ export default function EditVehiclePage() {
           fuelType:
             data.vehicle.fuelType || "Petrol",
           featured: Boolean(data.vehicle.featured),
+          sold: Boolean(data.vehicle.sold),
           images: vehicleImages,
         });
       } catch (loadError) {
@@ -267,7 +272,10 @@ export default function EditVehiclePage() {
             transmission: form.transmission,
             fuelType: form.fuelType,
             featured: form.featured,
-            images: form.images.map((image) => image.url),
+            sold: form.sold,
+            images: form.images.map(
+              (image) => image.url
+            ),
           }),
         }
       );
@@ -308,7 +316,8 @@ export default function EditVehiclePage() {
               href="/admin"
               className="text-xl font-black uppercase tracking-tight text-white"
             >
-              A-ZED <span className="text-red-600">69</span>
+              A-ZED{" "}
+              <span className="text-red-600">69</span>
             </Link>
           </div>
         </header>
@@ -331,7 +340,8 @@ export default function EditVehiclePage() {
               href="/admin"
               className="text-xl font-black uppercase tracking-tight text-white"
             >
-              A-ZED <span className="text-red-600">69</span>
+              A-ZED{" "}
+              <span className="text-red-600">69</span>
             </Link>
 
             <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-500">
@@ -359,8 +369,8 @@ export default function EditVehiclePage() {
           </h1>
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-500">
-            Update the vehicle information, photos and
-            featured status.
+            Update the vehicle information, photos,
+            featured status and sale status.
           </p>
         </div>
       </section>
@@ -409,7 +419,10 @@ export default function EditVehiclePage() {
                     value as Condition
                   )
                 }
-                options={["Brand New", "Foreign Used"]}
+                options={[
+                  "Brand New",
+                  "Foreign Used",
+                ]}
               />
 
               <Field
@@ -434,9 +447,16 @@ export default function EditVehiclePage() {
                 label="Transmission"
                 value={form.transmission}
                 onChange={(value) =>
-                  updateField("transmission", value)
+                  updateField(
+                    "transmission",
+                    value
+                  )
                 }
-                options={["Automatic", "Manual", "CVT"]}
+                options={[
+                  "Automatic",
+                  "Manual",
+                  "CVT",
+                ]}
               />
 
               <SelectField
@@ -453,7 +473,7 @@ export default function EditVehiclePage() {
                 ]}
               />
 
-              <div className="flex items-center sm:col-span-2">
+              <div className="flex flex-col gap-5 sm:col-span-2">
                 <label className="flex cursor-pointer items-center gap-3">
                   <input
                     type="checkbox"
@@ -473,11 +493,62 @@ export default function EditVehiclePage() {
                     </span>
 
                     <span className="block text-xs text-zinc-500">
-                      Display this vehicle in featured
-                      inventory sections.
+                      Display this vehicle in
+                      featured inventory sections.
                     </span>
                   </span>
                 </label>
+
+                <div className="flex items-center justify-between rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
+                  <div>
+                    <span className="block text-sm font-bold text-black">
+                      Sold Vehicle
+                    </span>
+
+                    <span className="mt-1 block text-xs leading-5 text-zinc-500">
+                      Turn this on when the vehicle
+                      has been sold.
+                    </span>
+
+                    <span
+                      className={`mt-2 inline-block text-[10px] font-black uppercase tracking-widest ${
+                        form.sold
+                          ? "text-red-600"
+                          : "text-green-600"
+                      }`}
+                    >
+                      {form.sold
+                        ? "SOLD"
+                        : "FOR SALE"}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={form.sold}
+                    aria-label="Mark vehicle as sold"
+                    onClick={() =>
+                      updateField(
+                        "sold",
+                        !form.sold
+                      )
+                    }
+                    className={`relative h-7 w-12 shrink-0 rounded-full transition-colors duration-200 ${
+                      form.sold
+                        ? "bg-red-600"
+                        : "bg-zinc-300"
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                        form.sold
+                          ? "translate-x-6"
+                          : "translate-x-1"
+                      }`}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -493,8 +564,9 @@ export default function EditVehiclePage() {
               </h2>
 
               <p className="mt-2 text-xs leading-5 text-zinc-500">
-                Existing photos are shown below. Remove
-                unwanted photos or add new ones.
+                Existing photos are shown below.
+                Remove unwanted photos or add new
+                ones.
               </p>
             </div>
 
@@ -618,25 +690,4 @@ function SelectField({
       </select>
     </div>
   );
-}
-
-
-
-
-function parseImages(block: string) {
-  const match = block.match(
-    /images:\s*\[([\s\S]*?)\],\s*featured:/
-  );
-
-  if (!match) {
-    return [];
-  }
-
-  const imageUrls = [
-    ...match[1].matchAll(
-      /["'](https?:\/\/[^"']+)["']/g
-    ),
-  ].map((image) => image[1]);
-
-  return imageUrls;
 }

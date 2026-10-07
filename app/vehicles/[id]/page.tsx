@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { vehicles } from "@/data/vehicles";
 import VehicleGallery from "@/components/VehicleGallery";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const WHATSAPP_NUMBER = "2348085942475";
 
@@ -325,6 +326,8 @@ export default async function VehicleDetailsPage({
           </div>
         </div>
       </section>
+
+      <Footer />
     </main>
   );
 }

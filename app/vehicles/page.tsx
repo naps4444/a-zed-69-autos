@@ -5,6 +5,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import VehicleCard from "@/components/VehicleCard";
 import { vehicles } from "@/data/vehicles";
+import Footer from "@/components/Footer";
 
 type Filter = "All" | "Brand New" | "Foreign Used";
 
@@ -327,6 +328,8 @@ export default function VehiclesPage() {
           </div>
         </div>
       </section>
+
+      <Footer />
     </main>
   );
 }
