@@ -3,7 +3,17 @@ import VehicleCard from "@/components/VehicleCard";
 import { vehicles } from "@/data/vehicles";
 
 export default function FeaturedVehicles() {
-  const featuredVehicles = vehicles.filter((vehicle) => vehicle.featured);
+  const featuredVehicles = vehicles.filter(
+    (vehicle) => vehicle.featured
+  );
+
+  const brandNewCount = vehicles.filter(
+    (vehicle) => vehicle.condition === "Brand New"
+  ).length;
+
+  const foreignUsedCount = vehicles.filter(
+    (vehicle) => vehicle.condition === "Foreign Used"
+  ).length;
 
   return (
     <section className="bg-gray-50 py-20 sm:py-24 lg:py-28">
@@ -71,21 +81,24 @@ export default function FeaturedVehicles() {
           </div>
         )}
 
-        {/* Bottom Information */}
+        {/* Inventory Information */}
         <div className="mt-10 grid gap-4 sm:grid-cols-3">
           <InfoItem
             title="Brand New"
-            description="Explore new vehicles from trusted manufacturers."
+            value={brandNewCount}
+            description="New vehicles from trusted manufacturers."
           />
 
           <InfoItem
             title="Foreign Used"
-            description="Browse quality foreign-used vehicle options."
+            value={foreignUsedCount}
+            description="Quality foreign-used vehicle options."
           />
 
           <InfoItem
-            title="Need Something Specific?"
-            description="Tell us what you are looking for and we can help source it."
+            title="Total Inventory"
+            value={vehicles.length}
+            description="Vehicles currently listed in our inventory."
           />
         </div>
       </div>
@@ -95,20 +108,30 @@ export default function FeaturedVehicles() {
 
 function InfoItem({
   title,
+  value,
   description,
 }: {
   title: string;
+  value: number;
   description: string;
 }) {
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-5">
-      <div className="mb-3 h-1 w-8 bg-red-600" />
+      <div className="mb-3 flex items-center justify-between gap-4">
+        <div className="h-1 w-8 bg-red-600" />
+
+        <span className="text-2xl font-black text-black">
+          {value}
+        </span>
+      </div>
 
       <h3 className="text-sm font-black uppercase tracking-tight text-black">
         {title}
       </h3>
 
-      <p className="mt-2 text-sm leading-6 text-gray-500">{description}</p>
+      <p className="mt-2 text-sm leading-6 text-gray-500">
+        {description}
+      </p>
     </div>
   );
 }
