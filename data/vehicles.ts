@@ -10,13 +10,13 @@ export const vehicles: Vehicle[] = [
     location: "Lagos, Nigeria",
     image: "https://res.cloudinary.com/de24nkiyk/image/upload/v1791388469/r5etxd0iicd6zxrmcr4v.jpg",
     images: [
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791388469/r5etxd0iicd6zxrmcr4v.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791388472/o6vznlme2ig8ikn0aeip.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791388474/ac4t2fmpx2hbqngcy6e0.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791388477/sp0ufkyhzonhfzya8gow.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791388478/ez99fkkzsjovqr2xgkz1.jpg"
-    ],
-    featured: true,
+  "https://res.cloudinary.com/de24nkiyk/image/upload/v1791388469/r5etxd0iicd6zxrmcr4v.jpg",
+  "https://res.cloudinary.com/de24nkiyk/image/upload/v1791388472/o6vznlme2ig8ikn0aeip.jpg",
+  "https://res.cloudinary.com/de24nkiyk/image/upload/v1791388474/ac4t2fmpx2hbqngcy6e0.jpg",
+  "https://res.cloudinary.com/de24nkiyk/image/upload/v1791388477/sp0ufkyhzonhfzya8gow.jpg",
+  "https://res.cloudinary.com/de24nkiyk/image/upload/v1791388478/ez99fkkzsjovqr2xgkz1.jpg"
+],
+    featured: false,
     transmission: "Automatic",
     fuelType: "Petrol",
   },
