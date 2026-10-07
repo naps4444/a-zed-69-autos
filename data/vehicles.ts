@@ -353,10 +353,10 @@ fuelType: "Petrol",
     fuelType: "Hybrid",
   },
 
-  {
-    id: "mdx-2021",
+    {
+    id: "mdx-2025",
     name: "mdx",
-    year: 2021,
+    year: 2025,
     condition: "Foreign Used",
     price: "₦20,049,900",
     location: "Lagos, Nigeria",
