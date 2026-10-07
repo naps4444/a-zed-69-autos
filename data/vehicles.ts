@@ -243,7 +243,6 @@ fuelType: "Petrol",
   "https://res.cloudinary.com/de24nkiyk/image/upload/v1790291992/WhatsApp_Image_2026-09-24_at_21.30.55_2.jpg"
 ],
     featured: true,
-    sold: false,
     transmission: "Automatic",
     fuelType: "Petrol",
   },
