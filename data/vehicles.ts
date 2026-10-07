@@ -8,15 +8,35 @@ export const vehicles: Vehicle[] = [
     condition: "Foreign Used",
     price: "₦40,000,000",
     location: "Lagos, Nigeria",
-    image: "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384620/uzjyahcrgsfqfthzoxlg.jpg",
+    image: "[object Object]",
     images: [
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384620/uzjyahcrgsfqfthzoxlg.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384625/tc8ysw9vvc72l35p9bv6.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384630/ucxq1unzxivhlieljnaz.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384633/qptbaydwksqzddkrnrkp.jpg",
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384636/mvfzsxndgr7h8aw06qby.jpg"
-    ],
-    featured: false,
+  {
+    "url": "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384620/uzjyahcrgsfqfthzoxlg.jpg",
+    "publicId": "",
+    "name": "Vehicle image 1"
+  },
+  {
+    "url": "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384625/tc8ysw9vvc72l35p9bv6.jpg",
+    "publicId": "",
+    "name": "Vehicle image 2"
+  },
+  {
+    "url": "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384630/ucxq1unzxivhlieljnaz.jpg",
+    "publicId": "",
+    "name": "Vehicle image 3"
+  },
+  {
+    "url": "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384633/qptbaydwksqzddkrnrkp.jpg",
+    "publicId": "",
+    "name": "Vehicle image 4"
+  },
+  {
+    "url": "https://res.cloudinary.com/de24nkiyk/image/upload/v1791384636/mvfzsxndgr7h8aw06qby.jpg",
+    "publicId": "",
+    "name": "Vehicle image 5"
+  }
+],
+    featured: true,
     transmission: "Automatic",
     fuelType: "Petrol",
   },
