@@ -16,7 +16,7 @@ export const vehicles: Vehicle[] = [
   "https://res.cloudinary.com/de24nkiyk/image/upload/v1791388477/sp0ufkyhzonhfzya8gow.jpg",
   "https://res.cloudinary.com/de24nkiyk/image/upload/v1791388478/ez99fkkzsjovqr2xgkz1.jpg"
 ],
-    featured: false,
+    featured: true,
     transmission: "Automatic",
     fuelType: "Petrol",
   },
