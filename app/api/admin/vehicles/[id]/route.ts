@@ -109,18 +109,20 @@ function parseBooleanField(block: string, field: string) {
 
 function parseImages(block: string) {
   const match = block.match(
-    /images:\s*(\[[\s\S]*?\]),\s*featured:/
+    /images:\s*\[([\s\S]*?)\],\s*featured:/
   );
 
   if (!match) {
     return [];
   }
 
-  try {
-    return JSON.parse(match[1]);
-  } catch {
-    return [];
-  }
+  const imageUrls = [
+    ...match[1].matchAll(
+      /["'](https?:\/\/[^"']+)["']/g
+    ),
+  ].map((image) => image[1]);
+
+  return imageUrls;
 }
 
 function parseVehicle(block: string) {
@@ -393,7 +395,8 @@ export async function PUT(
 
     if (
       !images.every(
-        (image: unknown) => typeof image === "string" && image.trim()
+        (image: unknown) =>
+          typeof image === "string" && image.trim()
       )
     ) {
       return NextResponse.json(
@@ -417,10 +420,16 @@ export async function PUT(
       );
     }
 
-    const newId = createVehicleId(name, Number(year));
+    const newId = createVehicleId(
+      name,
+      Number(year)
+    );
 
     if (newId !== id) {
-      const duplicate = findVehicleBlock(file.content, newId);
+      const duplicate = findVehicleBlock(
+        file.content,
+        newId
+      );
 
       if (duplicate) {
         return NextResponse.json(
@@ -450,7 +459,8 @@ export async function PUT(
       file.content.slice(0, vehicleBlock.index) +
       newVehicle +
       file.content.slice(
-        vehicleBlock.index + vehicleBlock.text.length
+        vehicleBlock.index +
+          vehicleBlock.text.length
       );
 
     validateVehiclesFile(updatedContent);
@@ -502,7 +512,10 @@ export async function DELETE(
 
     validateVehiclesFile(file.content);
 
-    const vehicleBlock = findVehicleBlock(file.content, id);
+    const vehicleBlock = findVehicleBlock(
+      file.content,
+      id
+    );
 
     if (!vehicleBlock) {
       return NextResponse.json(
@@ -511,7 +524,9 @@ export async function DELETE(
       );
     }
 
-    const vehicle = parseVehicle(vehicleBlock.text);
+    const vehicle = parseVehicle(
+      vehicleBlock.text
+    );
 
     const before = file.content.slice(
       0,
@@ -519,7 +534,8 @@ export async function DELETE(
     );
 
     const after = file.content.slice(
-      vehicleBlock.index + vehicleBlock.text.length
+      vehicleBlock.index +
+        vehicleBlock.text.length
     );
 
     const updatedContent = before + after;

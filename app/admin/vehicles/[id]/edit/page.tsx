@@ -41,6 +41,66 @@ function normalizeLocation(value: string) {
   return trimmed;
 }
 
+function normalizeImages(
+  images: unknown,
+  fallbackImage?: unknown
+): UploadedVehicleImage[] {
+  const normalized: UploadedVehicleImage[] = [];
+
+  if (Array.isArray(images)) {
+    images.forEach((image, index) => {
+      if (typeof image === "string" && image.trim()) {
+        normalized.push({
+          url: image,
+          publicId: "",
+          name: `Vehicle image ${index + 1}`,
+        });
+
+        return;
+      }
+
+      if (
+        image &&
+        typeof image === "object" &&
+        "url" in image &&
+        typeof image.url === "string" &&
+        image.url.trim()
+      ) {
+        const imageObject = image as {
+          url: string;
+          publicId?: string;
+          name?: string;
+        };
+
+        normalized.push({
+          url: imageObject.url,
+          publicId: imageObject.publicId || "",
+          name:
+            imageObject.name ||
+            `Vehicle image ${index + 1}`,
+        });
+      }
+    });
+  }
+
+  if (normalized.length === 0 && typeof fallbackImage === "string") {
+    const trimmedFallback = fallbackImage.trim();
+
+    if (
+      trimmedFallback &&
+      trimmedFallback !== "[object Object]"
+    ) {
+      normalized.push({
+        url: trimmedFallback,
+        publicId: "",
+        name: "Vehicle image 1",
+      });
+    }
+  }
+
+  return normalized;
+}
+
 export default function EditVehiclePage() {
   const params = useParams();
   const router = useRouter();
@@ -67,6 +127,8 @@ export default function EditVehiclePage() {
   useEffect(() => {
     async function loadVehicle() {
       try {
+        setError("");
+
         const response = await fetch(
           `/api/admin/vehicles/${encodeURIComponent(id)}`,
           {
@@ -77,25 +139,30 @@ export default function EditVehiclePage() {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || "Could not load vehicle.");
+          throw new Error(
+            data.error || "Could not load vehicle."
+          );
         }
+
+        const vehicleImages = normalizeImages(
+          data.vehicle.images,
+          data.vehicle.image
+        );
 
         setForm({
           name: data.vehicle.name || "",
           year: String(data.vehicle.year || ""),
-          condition: data.vehicle.condition || "Foreign Used",
+          condition:
+            data.vehicle.condition || "Foreign Used",
           price: data.vehicle.price || "₦",
-          location: data.vehicle.location || "Lagos, Nigeria",
-          transmission: data.vehicle.transmission || "Automatic",
-          fuelType: data.vehicle.fuelType || "Petrol",
+          location:
+            data.vehicle.location || "Lagos, Nigeria",
+          transmission:
+            data.vehicle.transmission || "Automatic",
+          fuelType:
+            data.vehicle.fuelType || "Petrol",
           featured: Boolean(data.vehicle.featured),
-          images: (data.vehicle.images || []).map(
-            (url: string, index: number) => ({
-              url,
-              publicId: "",
-              name: `Vehicle image ${index + 1}`,
-            })
-          ),
+          images: vehicleImages,
         });
       } catch (loadError) {
         setError(
@@ -130,10 +197,15 @@ export default function EditVehiclePage() {
   }
 
   function handleLocationBlur() {
-    updateField("location", normalizeLocation(form.location));
+    updateField(
+      "location",
+      normalizeLocation(form.location)
+    );
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    event: FormEvent<HTMLFormElement>
+  ) {
     event.preventDefault();
 
     setMessage("");
@@ -145,18 +217,26 @@ export default function EditVehiclePage() {
     }
 
     if (form.images.length === 0) {
-      setError("Please keep at least one vehicle image.");
+      setError(
+        "Please keep at least one vehicle image."
+      );
       return;
     }
 
     const year = Number(form.year);
 
-    if (!year || year < 1900 || year > new Date().getFullYear() + 1) {
+    if (
+      !year ||
+      year < 1900 ||
+      year > new Date().getFullYear() + 1
+    ) {
       setError("Please enter a valid vehicle year.");
       return;
     }
 
-    const normalizedLocation = normalizeLocation(form.location);
+    const normalizedLocation = normalizeLocation(
+      form.location
+    );
 
     if (!normalizedLocation) {
       setError("Please enter the vehicle location.");
@@ -187,7 +267,7 @@ export default function EditVehiclePage() {
             transmission: form.transmission,
             fuelType: form.fuelType,
             featured: form.featured,
-            images: form.images,
+            images: form.images.map((image) => image.url),
           }),
         }
       );
@@ -195,7 +275,9 @@ export default function EditVehiclePage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Could not update vehicle.");
+        throw new Error(
+          data.error || "Could not update vehicle."
+        );
       }
 
       setMessage(
@@ -277,7 +359,8 @@ export default function EditVehiclePage() {
           </h1>
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-500">
-            Update the vehicle information, photos and featured status.
+            Update the vehicle information, photos and
+            featured status.
           </p>
         </div>
       </section>
@@ -299,7 +382,9 @@ export default function EditVehiclePage() {
               <Field
                 label="Vehicle Name"
                 value={form.name}
-                onChange={(value) => updateField("name", value)}
+                onChange={(value) =>
+                  updateField("name", value)
+                }
                 placeholder="e.g. Toyota Camry TRD"
                 required
               />
@@ -308,7 +393,9 @@ export default function EditVehiclePage() {
                 label="Year"
                 type="number"
                 value={form.year}
-                onChange={(value) => updateField("year", value)}
+                onChange={(value) =>
+                  updateField("year", value)
+                }
                 placeholder="e.g. 2021"
                 required
               />
@@ -317,7 +404,10 @@ export default function EditVehiclePage() {
                 label="Condition"
                 value={form.condition}
                 onChange={(value) =>
-                  updateField("condition", value as Condition)
+                  updateField(
+                    "condition",
+                    value as Condition
+                  )
                 }
                 options={["Brand New", "Foreign Used"]}
               />
@@ -343,15 +433,24 @@ export default function EditVehiclePage() {
               <SelectField
                 label="Transmission"
                 value={form.transmission}
-                onChange={(value) => updateField("transmission", value)}
+                onChange={(value) =>
+                  updateField("transmission", value)
+                }
                 options={["Automatic", "Manual", "CVT"]}
               />
 
               <SelectField
                 label="Fuel Type"
                 value={form.fuelType}
-                onChange={(value) => updateField("fuelType", value)}
-                options={["Petrol", "Diesel", "Hybrid", "Electric"]}
+                onChange={(value) =>
+                  updateField("fuelType", value)
+                }
+                options={[
+                  "Petrol",
+                  "Diesel",
+                  "Hybrid",
+                  "Electric",
+                ]}
               />
 
               <div className="flex items-center sm:col-span-2">
@@ -360,7 +459,10 @@ export default function EditVehiclePage() {
                     type="checkbox"
                     checked={form.featured}
                     onChange={(event) =>
-                      updateField("featured", event.target.checked)
+                      updateField(
+                        "featured",
+                        event.target.checked
+                      )
                     }
                     className="h-5 w-5 rounded border-zinc-300 accent-red-600"
                   />
@@ -371,7 +473,8 @@ export default function EditVehiclePage() {
                     </span>
 
                     <span className="block text-xs text-zinc-500">
-                      Display this vehicle in featured inventory sections.
+                      Display this vehicle in featured
+                      inventory sections.
                     </span>
                   </span>
                 </label>
@@ -390,13 +493,19 @@ export default function EditVehiclePage() {
               </h2>
 
               <p className="mt-2 text-xs leading-5 text-zinc-500">
-                Remove unwanted images or add new ones.
+                Existing photos are shown below. Remove
+                unwanted photos or add new ones.
               </p>
             </div>
 
             <VehicleImageUploader
+              key={`${id}-${form.images
+                .map((image) => image.url)
+                .join("|")}`}
               initialImages={form.images}
-              onChange={(images) => updateField("images", images)}
+              onChange={(images) =>
+                updateField("images", images)
+              }
             />
           </div>
 
@@ -425,7 +534,9 @@ export default function EditVehiclePage() {
               disabled={saving}
               className="h-12 rounded-xl bg-black px-7 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {saving ? "Saving Changes..." : "Save Changes"}
+              {saving
+                ? "Saving Changes..."
+                : "Save Changes"}
             </button>
           </div>
         </form>
@@ -462,7 +573,9 @@ function Field({
       <input
         type={type}
         value={value}
-        onChange={(event) => onChange(event.target.value)}
+        onChange={(event) =>
+          onChange(event.target.value)
+        }
         onBlur={onBlur}
         placeholder={placeholder}
         required={required}
@@ -492,7 +605,9 @@ function SelectField({
 
       <select
         value={value}
-        onChange={(event) => onChange(event.target.value)}
+        onChange={(event) =>
+          onChange(event.target.value)
+        }
         className="h-12 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 text-sm text-black outline-none transition focus:border-red-600 focus:bg-white focus:ring-4 focus:ring-red-600/10"
       >
         {options.map((option) => (
@@ -503,4 +618,25 @@ function SelectField({
       </select>
     </div>
   );
+}
+
+
+
+
+function parseImages(block: string) {
+  const match = block.match(
+    /images:\s*\[([\s\S]*?)\],\s*featured:/
+  );
+
+  if (!match) {
+    return [];
+  }
+
+  const imageUrls = [
+    ...match[1].matchAll(
+      /["'](https?:\/\/[^"']+)["']/g
+    ),
+  ].map((image) => image[1]);
+
+  return imageUrls;
 }
