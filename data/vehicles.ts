@@ -1,21 +1,7 @@
 ﻿import type { Vehicle } from "@/components/VehicleCard";
 
 export const vehicles: Vehicle[] = [
-  {
-    id: "kia-2021",
-    name: "kia",
-    year: 2021,
-    condition: "Foreign Used",
-    price: "₦40,000,000",
-    location: "Lagos, Nigeria",
-    image: "https://res.cloudinary.com/de24nkiyk/image/upload/v1791477569/ilvhejtwh7xyqom0golf.jpg",
-    images: [
-      "https://res.cloudinary.com/de24nkiyk/image/upload/v1791477569/ilvhejtwh7xyqom0golf.jpg"
-    ],
-    featured: true,
-    transmission: "Automatic",
-    fuelType: "Petrol",
-  },
+  
 
   {
     id: "mercedes-benz-gle-350-2018",
