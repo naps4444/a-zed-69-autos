@@ -11,7 +11,6 @@ export interface Vehicle {
   image: string;
   images?: string[];
   featured: boolean;
-  sold: boolean;
   transmission?: string;
   fuelType?: string;
 }
@@ -41,12 +40,6 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
           <span className="rounded-full bg-red-600 px-3 py-1.5 text-xs font-bold text-white">
             {vehicle.condition}
           </span>
-
-          {vehicle.sold && (
-            <span className="rounded-full bg-black px-3 py-1.5 text-xs font-bold text-white shadow-lg">
-              SOLD
-            </span>
-          )}
         </div>
 
         <div className="absolute bottom-4 left-4">
@@ -102,7 +95,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
         <div className="mt-5 flex items-end justify-between border-t border-gray-100 pt-4">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-              {vehicle.sold ? "Sold" : "Starting From"}
+              Starting From
             </p>
 
             <p className="mt-1 text-xl font-black text-black">
